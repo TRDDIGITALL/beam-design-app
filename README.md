@@ -30,3 +30,6 @@ Civil Engineer | Strength Design Method (SDM)
 
 ---
 **หมายเหตุ:** โปรแกรมนี้ใช้สำหรับการคำนวณเบื้องต้น ควรตรวจสอบผลลัพธ์กับวิศวกรผู้เชี่ยวชาญก่อนนำไปใช้งานจริง
+<img width="1865" height="952" alt="image" src="https://github.com/user-attachments/assets/990aa925-4881-4f71-a11c-2d834c4855f7" />
+<img width="783" height="842" alt="image" src="https://github.com/user-attachments/assets/9c1f1748-bbcc-4101-87e6-02405c86f9fd" />
+
