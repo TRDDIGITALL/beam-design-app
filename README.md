@@ -26,7 +26,9 @@
 - NumPy
 
 ## ผู้พัฒนา
-Civil Engineer | Strength Design Method (SDM)
+Sketchup & Civil Engineer | Strength Design Method (SDM)
+BuildSmart Learning Community
+Link: https://beam-design-sdm-app.streamlit.app/
 
 ---
 **หมายเหตุ:** โปรแกรมนี้ใช้สำหรับการคำนวณเบื้องต้น ควรตรวจสอบผลลัพธ์กับวิศวกรผู้เชี่ยวชาญก่อนนำไปใช้งานจริง
