@@ -538,10 +538,10 @@ if calculate:
     check_data = {
         'รายการตรวจสอบ': [
             'โมเมนต์ดัด ($\phi M_n \ge M_u$)',
-            'แรงเฉือน (φVc ≥ Vu)', 
-            'เหล็กรับแรงดึง (As ≥ As_req)',
+            'แรงเฉือน ($\phi V_c$ ≥ Vu)', 
+            'เหล็กรับแรงดึง ($A_s$ ≥ $A_{{s,req}}$)',
             'เหล็กปลอก (spacing ≤ max)',
-            'อัตราเหล็ก (ρ ≤ ρmax)'
+            'อัตราเหล็ก (ρ ≤ $\\rho_{{max}}$)'
         ],
         'ค่าที่ได้': [
             f"{results.get('phi_Mn', 0):,.0f} kg-m",
@@ -568,9 +568,9 @@ if calculate:
     
     
     df_check = pd.DataFrame(check_data)
-    #st.dataframe(df_check, use_container_width=True, hide_index=True)
-    markdown_table = df_check.to_markdown(index=False)
-    st.markdown(markdown_table)
+    st.dataframe(df_check, use_container_width=True, hide_index=True)
+    #markdown_table = df_check.to_markdown(index=False)
+    #st.markdown(markdown_table)
 
     # สรุปเหล็กเสริม
     st.markdown("#### 🔩 สรุปเหล็กเสริมที่เลือก")
