@@ -568,9 +568,9 @@ if calculate:
     
     
     df_check = pd.DataFrame(check_data)
-    st.dataframe(df_check, use_container_width=True, hide_index=True)
-    #markdown_table = df_check.to_markdown(index=False)
-    #st.markdown(markdown_table)
+    #st.dataframe(df_check, use_container_width=True, hide_index=True)
+    markdown_table = df_check.to_markdown(index=False)
+    st.markdown(markdown_table)
 
     # สรุปเหล็กเสริม
     st.markdown("#### 🔩 สรุปเหล็กเสริมที่เลือก")
