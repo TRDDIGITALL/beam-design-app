@@ -7,6 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+
+
 # ตั้งค่าฟอนต์สำหรับ matplotlib
 plt.rcParams['font.size'] = 9
 plt.rcParams['axes.unicode_minus'] = False
@@ -415,8 +417,8 @@ st.sidebar.header("📝 ข้อมูลการออกแบบ")
 
 # 1. คุณสมบัติวัสดุ
 st.sidebar.subheader("1. คุณสมบัติวัสดุ")
-fc = st.sidebar.number_input("กำลังอัดคอนกรีต f'c (kg/cm²)", min_value=150, max_value=500, value=240, step=10)
-fy = st.sidebar.number_input("กำลังดึงเหล็ก f_y (kg/cm²)", min_value=2400, max_value=4200, value=4000, step=200)
+fc = st.sidebar.number_input("กำลังอัดคอนกรีต $f'_c$ (kg/cm²)", min_value=150, max_value=500, value=240, step=10)
+fy = st.sidebar.number_input("กำลังดึงเหล็ก $f_y$ (kg/cm²)", min_value=2400, max_value=4200, value=4000, step=200)
 
 # 2. ขนาดหน้าตัด
 st.sidebar.subheader("2. ขนาดหน้าตัด")
@@ -426,8 +428,8 @@ cover = st.sidebar.number_input("ระยะคอนกรีตปก cover (
 
 # 3. แรงกระทำ
 st.sidebar.subheader("3. แรงกระทำ")
-Mu = st.sidebar.number_input("โมเมนต์ดัดใช้งาน Mu (kg-m)", min_value=1000, max_value=50000, value=5500, step=100)
-Vu = st.sidebar.number_input("แรงเฉือนใช้งาน Vu (kg)", min_value=1000, max_value=20000, value=3257, step=50)
+Mu = st.sidebar.number_input("โมเมนต์ดัดใช้งาน $M_u$ (kg-m)", min_value=1000, max_value=50000, value=5500, step=100)
+Vu = st.sidebar.number_input("แรงเฉือนใช้งาน $V_u$ (kg)", min_value=1000, max_value=20000, value=3257, step=50)
 
 # 4. เหล็กปลอก
 st.sidebar.subheader("4. เหล็กปลอก (Stirrups)")
@@ -535,7 +537,7 @@ if calculate:
     
     check_data = {
         'รายการตรวจสอบ': [
-            'โมเมนต์ดัด (φMn ≥ Mu)',
+            'โมเมนต์ดัด ($\phi M_n \ge M_u$)',
             'แรงเฉือน (φVc ≥ Vu)', 
             'เหล็กรับแรงดึง (As ≥ As_req)',
             'เหล็กปลอก (spacing ≤ max)',
@@ -564,9 +566,12 @@ if calculate:
         ]
     }
     
-    df_check = pd.DataFrame(check_data)
-    st.dataframe(df_check, use_container_width=True, hide_index=True)
     
+    df_check = pd.DataFrame(check_data)
+    #st.dataframe(df_check, use_container_width=True, hide_index=True)
+    markdown_table = df_check.to_markdown(index=False)
+    st.markdown(markdown_table)
+
     # สรุปเหล็กเสริม
     st.markdown("#### 🔩 สรุปเหล็กเสริมที่เลือก")
     
