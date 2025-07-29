@@ -142,16 +142,16 @@ def calculate_beam_design(fc, fy, b, h, d, Mu, Vu, stirrup_type, stirrup_legs, s
         beta1 = 0.85 if fc <= 280 else max(0.65, 0.85 - 0.05 * (fc - 280) / 70)
         
         calculations.append(f"=== การออกแบบคานคอนกรีต (Strength Design Method) ===")
-        calculations.append(f"• ข้อมูลพื้นฐาน: f'c = {fc} kg/cm², fy = {fy} kg/cm²")
-        calculations.append(f"• ขนาดคาน: b = {b} cm, h = {h} cm, d = {d} cm")
-        calculations.append(f"• β1 = {beta1:.3f}")
+        calculations.append(f"• ข้อมูลพื้นฐาน: $f'_c$ = {fc} kg/cm², $f_y$ = {fy} kg/cm²\\")
+        calculations.append(f"• ขนาดคาน: b = {b} cm, h = {h} cm, d = {d} cm\\")
+        calculations.append(f"• $β_1$ = {beta1:.3f}\\")
         
         # คำนวณ ρmin และ ρmax (แก้ไขตาม ACI 318)
         rho_min = max(1.4 / fy, 0.8 * math.sqrt(fc) / fy)
         rho_max = 0.75 * (0.85 * fc / fy) * (beta1 / (1 + beta1))  # แก้ไขสูตร
         
-        calculations.append(f"• ρmin = max(1.4/fy, 0.8√f'c/fy) = {rho_min:.4f}")
-        calculations.append(f"• ρmax = 0.75×(0.85×f'c/fy)×(β1/(1+β1)) = {rho_max:.4f} (ACI 318)")
+        calculations.append(f"• $ρ_{{min}}$ = max($\\frac{{1.4}}{{f_y}}$, $\\frac{{0.8\\sqrt{{f'_c}} }}{{f_y}}$) = {rho_min:.4f}\\")
+        calculations.append(f"• $ρ_{{max}} = 0.75× 0.85 β_1  \\frac{{f'_c}}{{f_y}}\\cdot  \\frac{{6120}}{{6120+f_y}}$ = {rho_max:.4f} (ACI 318)\\")
         
         # คำนวณพื้นที่เหล็กที่ต้องการ (แก้ไขการคำนวณ Rn และหน่วยให้ถูกต้อง)
         # แปลงหน่วย: Mu (kg-m) → N-mm
@@ -166,48 +166,49 @@ def calculate_beam_design(fc, fy, b, h, d, Mu, Vu, stirrup_type, stirrup_legs, s
             
         As_required = rho_required * b * d
         
-        calculations.append(f"• การแปลงหน่วย: Mu = {Mu} kg-m = {Mu_N_mm:,.0f} N-mm")
-        calculations.append(f"• Rn = Mu/(φ×b×d²) = {Mu_N_mm:,.0f}/(0.9×{b_mm}×{d_mm}²) = {Rn:.2f} N/mm²")
-        calculations.append(f"• ρ required = Rn/fy = {Rn:.2f}/{fy} = {rho_required:.6f}")
-        calculations.append(f"• As required = {As_required:.2f} cm²")
+        calculations.append(f"• การแปลงหน่วย: $M_u$ = {Mu} kg-m = {Mu_N_mm:,.0f} N-mm\\")
+        calculations.append(f"• $R_n = \\frac{{M_u}}{{\phi  b  d²}}$ ")
+        calculations.append(f" = $\\frac{{ {Mu_N_mm:,.0f} }} {{ 0.9×{b_mm}×{d_mm}²}}$ = {Rn:.2f} N/mm²\\")
+        calculations.append(f"• $ρ_{{required}} = \\frac{{R_n}}{{f_y }} $ = {Rn:.2f}/{fy} = {rho_required:.6f}\\")
+        calculations.append(f"• $A_{{s~required}}$ = {As_required:.2f} cm²\\")
         
         # ตรวจสอบข้อกำหนด ρ (แก้ไขการเปรียบเทียบ)
         rho_status = "OK"
         if rho_required < rho_min:
-            rho_status = "ใช้ ρmin เนื่องจาก ρ < ρmin"
+            rho_status = "ใช้ $ρ_{{min}}$ เนื่องจาก ρ < $ρ_{{min}}$"
             rho_required = rho_min
             As_required = rho_min * b * d
-            calculations.append(f"• เนื่องจาก ρ required = {Rn/fy:.6f} < ρmin = {rho_min:.4f}")
-            calculations.append(f"• ดังนั้นใช้ ρ = ρmin = {rho_min:.4f}")
-            calculations.append(f"• As required = ρmin×b×d = {rho_min:.4f}×{b}×{d} = {As_required:.2f} cm²")
+            calculations.append(f"• เนื่องจาก $ρ_{{required}}$ = {Rn/fy:.6f} < $ρ_{{min}}$ = {rho_min:.4f}\\")
+            calculations.append(f"• ดังนั้นใช้ $ρ = ρ_{{min}}$ = {rho_min:.4f}\\")
+            calculations.append(f"• $A_{{s,required}} = ρ_{{min}} b d$ = {rho_min:.4f}×{b}×{d} = {As_required:.2f} cm²\\")
         elif rho_required > rho_max:
-            rho_status = "เกิน ρmax - ต้องใช้เหล็กรับแรงอัด"
+            rho_status = "เกิน $ρ_{{max}}$ - ต้องใช้เหล็กรับแรงอัด"
             
-        calculations.append(f"• ตรวจสอบ: ρmin = {rho_min:.4f} ≤ ρ = {rho_required:.4f} ≤ ρmax = {rho_max:.4f} → {rho_status}")
+        calculations.append(f"• ตรวจสอบ: $ρ_{{min}}$ = {rho_min:.4f} ≤ ρ = {rho_required:.4f} ≤ $ρ_{{max}}$ = {rho_max:.4f} → {rho_status}")
         
         # คำนวณเหล็กที่จัดให้
         steel_areas = {'DB12': 1.13, 'DB16': 2.01, 'DB20': 3.14, 'DB25': 4.91, 'DB32': 8.04}
         As_provided_tension = steel_areas[tension_steel_type] * tension_steel_count
         
-        calculations.append(f"\n--- เหล็กรับแรงดึง ---")
-        calculations.append(f"• เลือกใช้: {tension_steel_count} เส้น {tension_steel_type}")
-        calculations.append(f"• As provided = {As_provided_tension:.2f} cm²")
-        calculations.append(f"• ตรวจสอบ: As provided = {As_provided_tension:.2f} {'≥' if As_provided_tension >= As_required else '<'} As required = {As_required:.2f} cm² → {'ผ่าน' if As_provided_tension >= As_required else 'ไม่ผ่าน'}")
+        calculations.append(f"\n--- เหล็กรับแรงดึง ---" )
+        calculations.append(f"• เลือกใช้: {tension_steel_count} เส้น {tension_steel_type}\\")
+        calculations.append(f"• As provided = {As_provided_tension:.2f} cm²\\")
+        calculations.append(f"• ตรวจสอบ: As provided = {As_provided_tension:.2f} {'≥' if As_provided_tension >= As_required else '<'} As required = {As_required:.2f} cm² → {'ผ่าน' if As_provided_tension >= As_required else 'ไม่ผ่าน'}\\")
         
         # คำนวณ Mn แบบละเอียดและถูกต้อง (แยกคำนวณแรงดึงและแรงอัด)
         As_prime = 0
         if compression_steel and compression_steel_count > 0:
             As_prime = steel_areas[compression_steel_type] * compression_steel_count
             calculations.append(f"\n--- เหล็กรับแรงอัด ---")
-            calculations.append(f"• เลือกใช้: {compression_steel_count} เส้น {compression_steel_type}")
-            calculations.append(f"• As' = {As_prime:.2f} cm²")
+            calculations.append(f"• เลือกใช้: {compression_steel_count} เส้น {compression_steel_type}\\")
+            calculations.append(f"• As' = {As_prime:.2f} cm²\\")
         
         # คำนวณ a และ Mn ถูกต้องตาม ACI 318 (แก้ไขให้ละเอียดและถูกต้อง)
         a = (As_provided_tension * fy) / (0.85 * fc * b)  # ไม่ลบ As' เพราะคิดแยก
         
         # ตรวจสอบ a ≤ 0.75d สำหรับ Under-reinforced section
         a_max = 0.75 * d
-        calculations.append(f"• ตรวจสอบ a = {a:.2f} cm {'≤' if a <= a_max else '>'} 0.75d = {a_max:.2f} cm → {'Under-reinforced' if a <= a_max else 'Over-reinforced'}")
+        calculations.append(f"• ตรวจสอบ a = {a:.2f} cm {'≤' if a <= a_max else '>'} 0.75d = {a_max:.2f} cm → {'Under-reinforced' if a <= a_max else 'Over-reinforced'}\\")
         
         # คำนวณ Mn โดยรวมทั้งแรงดึงและแรงอัด
         Mn_tension = As_provided_tension * fy * (d - a/2)  # โมเมนต์จากเหล็กรับแรงดึง (kg-cm)
@@ -218,25 +219,25 @@ def calculate_beam_design(fc, fy, b, h, d, Mu, Vu, stirrup_type, stirrup_legs, s
         phi_Mn = phi_b * Mn
         
         calculations.append(f"\n--- การคำนวณ Mn (แก้ไขให้ถูกต้อง) ---")
-        calculations.append(f"• a = As×fy/(0.85×f'c×b) = {As_provided_tension}×{fy}/(0.85×{fc}×{b}) = {a:.2f} cm")
-        calculations.append(f"• Mn_tension = As×fy×(d-a/2) = {As_provided_tension}×{fy}×({d}-{a:.2f}/2)")
-        calculations.append(f"           = {As_provided_tension}×{fy}×{d-a/2:.2f} = {Mn_tension:,.0f} kg-cm")
+        calculations.append(f"• a = As×fy/(0.85×f'c×b) = {As_provided_tension}×{fy}/(0.85×{fc}×{b}) = {a:.2f} cm\\")
+        calculations.append(f"• Mn_tension = As×fy×(d-a/2) = {As_provided_tension}×{fy}×({d}-{a:.2f}/2)\\")
+        calculations.append(f"           = {As_provided_tension}×{fy}×{d-a/2:.2f} = {Mn_tension:,.0f} kg-cm\\")
         if As_prime > 0:
-            calculations.append(f"• Mn_compression = As'×fy×(d-d') = {As_prime}×{fy}×({d}-{d_prime})")
-            calculations.append(f"              = {As_prime}×{fy}×{d-d_prime} = {Mn_compression:,.0f} kg-cm")
-        calculations.append(f"• Mn_total = {Mn_tension:,.0f} + {Mn_compression:,.0f} = {Mn_total_kg_cm:,.0f} kg-cm")
-        calculations.append(f"• Mn = {Mn_total_kg_cm:,.0f}/100 = {Mn:,.0f} kg-m")
-        calculations.append(f"• φMn = {phi_b}×{Mn:,.0f} = {phi_Mn:,.0f} kg-m")
-        calculations.append(f"• ตรวจสอบ: φMn = {phi_Mn:,.0f} {'≥' if phi_Mn >= Mu else '<'} Mu = {Mu:,.0f} kg-m → {'ผ่าน' if phi_Mn >= Mu else 'ไม่ผ่าน'}")
+            calculations.append(f"• Mn_compression = As'×fy×(d-d') = {As_prime}×{fy}×({d}-{d_prime})\\")
+            calculations.append(f"              = {As_prime}×{fy}×{d-d_prime} = {Mn_compression:,.0f} kg-cm\\")
+        calculations.append(f"• Mn_total = {Mn_tension:,.0f} + {Mn_compression:,.0f} = {Mn_total_kg_cm:,.0f} kg-cm\\")
+        calculations.append(f"• Mn = {Mn_total_kg_cm:,.0f}/100 = {Mn:,.0f} kg-m\\")
+        calculations.append(f"• φMn = {phi_b}×{Mn:,.0f} = {phi_Mn:,.0f} kg-m\\")
+        calculations.append(f"• ตรวจสอบ: φMn = {phi_Mn:,.0f} {'≥' if phi_Mn >= Mu else '<'} Mu = {Mu:,.0f} kg-m → {'ผ่าน' if phi_Mn >= Mu else 'ไม่ผ่าน'}\\")
         
         # คำนวณแรงเฉือน (แก้ไขสูตร Vc ตาม ACI 318)
         calculations.append(f"\n--- การตรวจสอบแรงเฉือน ---")
         Vc = 0.53 * math.sqrt(fc) * b * d  # kg (สูตร ACI 318)
         phi_Vc = phi_s * Vc
         
-        calculations.append(f"• Vc = 0.53×√f'c×b×d = 0.53×√{fc}×{b}×{d} = {Vc:.0f} kg (ACI 318)")
-        calculations.append(f"• φVc = {phi_s}×{Vc:.0f} = {phi_Vc:.0f} kg")
-        calculations.append(f"• ตรวจสอบ: φVc = {phi_Vc:.0f} {'≥' if phi_Vc >= Vu else '<'} Vu = {Vu} kg → {'ผ่าน' if phi_Vc >= Vu else 'ไม่ผ่าน'}")
+        calculations.append(f"• Vc = 0.53×√f'c×b×d = 0.53×√{fc}×{b}×{d} = {Vc:.0f} kg (ACI 318)\\")
+        calculations.append(f"• φVc = {phi_s}×{Vc:.0f} = {phi_Vc:.0f} kg\\")
+        calculations.append(f"• ตรวจสอบ: φVc = {phi_Vc:.0f} {'≥' if phi_Vc >= Vu else '<'} Vu = {Vu} kg → {'ผ่าน' if phi_Vc >= Vu else 'ไม่ผ่าน'}\\")
         
         # ตรวจสอบเหล็กปลอก
         stirrup_areas = {'RB6': 0.283, 'RB9': 0.636, 'DB12': 1.131}
@@ -244,11 +245,11 @@ def calculate_beam_design(fc, fy, b, h, d, Mu, Vu, stirrup_type, stirrup_legs, s
         max_spacing = min(d/2, 60)  # cm
         
         calculations.append(f"\n--- เหล็กปลอก ---")
-        calculations.append(f"• เลือกใช้: {stirrup_type} จำนวน {stirrup_legs} ขา")
-        calculations.append(f"• Av = {Av:.3f} cm²")
-        calculations.append(f"• ระยะเรียง = {stirrup_spacing} cm")
-        calculations.append(f"• ระยะเรียงสูงสุดที่อนุญาต = min(d/2, 60) = {max_spacing:.0f} cm")
-        calculations.append(f"• ตรวจสอบ: {stirrup_spacing} {'≤' if stirrup_spacing <= max_spacing else '>'} {max_spacing:.0f} cm → {'ผ่าน' if stirrup_spacing <= max_spacing else 'ไม่ผ่าน'}")
+        calculations.append(f"• เลือกใช้: {stirrup_type} จำนวน {stirrup_legs} ขา\\")
+        calculations.append(f"• Av = {Av:.3f} cm²\\")
+        calculations.append(f"• ระยะเรียง = {stirrup_spacing} cm\\")
+        calculations.append(f"• ระยะเรียงสูงสุดที่อนุญาต = min(d/2, 60) = {max_spacing:.0f} cm\\")
+        calculations.append(f"• ตรวจสอบ: {stirrup_spacing} {'≤' if stirrup_spacing <= max_spacing else '>'} {max_spacing:.0f} cm → {'ผ่าน' if stirrup_spacing <= max_spacing else 'ไม่ผ่าน'}\\")
         
         # สรุปผล
         calculations.append(f"\n=== สรุปผลการออกแบบ ===")
@@ -415,7 +416,7 @@ st.sidebar.header("📝 ข้อมูลการออกแบบ")
 # 1. คุณสมบัติวัสดุ
 st.sidebar.subheader("1. คุณสมบัติวัสดุ")
 fc = st.sidebar.number_input("กำลังอัดคอนกรีต f'c (kg/cm²)", min_value=150, max_value=500, value=240, step=10)
-fy = st.sidebar.number_input("กำลังดึงเหล็ก fy (kg/cm²)", min_value=2400, max_value=4200, value=4000, step=200)
+fy = st.sidebar.number_input("กำลังดึงเหล็ก f_y (kg/cm²)", min_value=2400, max_value=4200, value=4000, step=200)
 
 # 2. ขนาดหน้าตัด
 st.sidebar.subheader("2. ขนาดหน้าตัด")
@@ -484,8 +485,8 @@ if calculate:
     with col1:
         st.markdown(f"""
         **คุณสมบัติวัสดุ:**
-        - f'c = {fc} kg/cm²
-        - fy = {fy} kg/cm²
+        - $f'_c$ = {fc} kg/cm²
+        - $f_y$ = {fy} kg/cm²
         """)
         
     with col2:
@@ -500,8 +501,8 @@ if calculate:
     with col3:
         st.markdown(f"""
         **แรงกระทำ:**
-        - Mu = {Mu:,.0f} kg-m
-        - Vu = {Vu:,.0f} kg
+        - $M_u$ = {Mu:,.0f} kg-m
+        - $V_u$ = {Vu:,.0f} kg
         """)
     
     # ผลลัพธ์หลัก (ขนาดใหญ่ขึ้นสำหรับการพิมพ์)
@@ -510,21 +511,21 @@ if calculate:
     
     with col1:
         st.metric(
-            "As ที่ต้องการ", 
+            "$A_s$ ที่ต้องการ", 
             f"{results.get('As_required', 0):.2f} cm²",
             delta=f"ρ = {results.get('rho_required', 0):.4f}"
         )
         
     with col2:
         st.metric(
-            "φMn", 
+            "$\phi M_n$", 
             f"{results.get('phi_Mn', 0):,.0f} kg-m",
             delta="✅ ผ่าน" if results.get('moment_check', False) else "❌ ไม่ผ่าน"
         )
         
     with col3:
         st.metric(
-            "φVc", 
+            "$\phi V_c$", 
             f"{results.get('phi_Vc', 0):,.0f} kg",
             delta="✅ ผ่าน" if results.get('shear_check', False) else "❌ ไม่ผ่าน"
         )
@@ -715,7 +716,9 @@ if calculate:
                 # แสดงข้อมูลในรูปแบบที่อ่านง่าย (ทั้งหมด)
                 content = '\n'.join(line for line in lines if line.strip())
                 if content:
-                    st.text(content)
+                    #st.text( content)
+                    st.markdown(content)
+                    
     
     # สรุปสุดท้าย
     st.markdown("#### 🎯 สรุปผลการออกแบบ")
@@ -746,8 +749,8 @@ else:
     with col1:
         st.markdown(f"""
         **คุณสมบัติวัสดุ:**
-        - f'c = {fc} kg/cm²
-        - fy = {fy} kg/cm²
+        - $f'_c$ = {fc} kg/cm²
+        - $f_y$ = {fy} kg/cm²
         """)
         
     with col2:
@@ -762,8 +765,8 @@ else:
     with col3:
         st.markdown(f"""
         **แรงกระทำ:**
-        - Mu = {Mu:,.0f} kg-m
-        - Vu = {Vu:,.0f} kg
+        - $M_u$ = {Mu:,.0f} kg-m
+        - $V_u$ = {Vu:,.0f} kg
         """)
     
     # เหล็กเสริมที่เลือก
@@ -778,7 +781,7 @@ else:
         st.markdown(f"""
         **เหล็กรับแรงดึง:**
         - {tension_steel_type} จำนวน {tension_steel_count} เส้น
-        - As = {As_tension_calc:.2f} cm²
+        - $A_s$ = {As_tension_calc:.2f} cm²
         """)
         
         if compression_steel:
