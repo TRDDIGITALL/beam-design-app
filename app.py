@@ -251,7 +251,7 @@ def calculate_beam_design(fc, fy, b, h, d, Mu, Vu, stirrup_type, stirrup_legs, s
         calculations.append(f"• $A_v$ = {Av:.3f} cm²\\")
         calculations.append(f"• ระยะเรียง = {stirrup_spacing} cm\\")
         calculations.append(f"• ระยะเรียงสูงสุดที่อนุญาต = min( $\\frac{{d}}{{2}}$, 60) = {max_spacing:.0f} cm\\")
-        calculations.append(f"• ตรวจสอบ: {stirrup_spacing} {'≤' if stirrup_spacing <= max_spacing else '>'} {max_spacing:.0f} cm → {'ผ่าน' if stirrup_spacing <= max_spacing else 'ไม่ผ่าน'}\\")
+        calculations.append(f"• ตรวจสอบ: {stirrup_spacing} {'≤' if stirrup_spacing <= max_spacing else '>'} {max_spacing:.0f} cm → {'ผ่าน' if stirrup_spacing <= max_spacing else 'ไม่ผ่าน'}")
         
         # สรุปผล
         calculations.append(f"\n=== สรุปผลการออกแบบ ===")
